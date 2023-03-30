@@ -5,7 +5,7 @@ export default function TodoList(props) {
         <div className="border-b border-[#bebebe] text-gray-800 py-4">
             <div className="flex gap-4 relative" >
                 <input type="checkbox" checked={props.isChecked} onChange={props.handleCheckboxChange} />
-                <p className={`text-xl break-words max-w-sm sm:max-w-xl ${props.isChecked ? "line-through" : "no-underline"}`}>{props.value}</p>
+                <p className={`text-xl break-words w-[80%] sm:w-[85%] ${props.isChecked ? "line-through" : "no-underline"}`}>{props.value}</p>
                 {!props.isDeleting ?
                     <span className="absolute top-0 right-0 rounded-full bg-gray-200 cursor-pointer p-1">
                         <AiFillDelete color="#ff2700" fontSize={22} onClick={props.handleDeleteClick} />
