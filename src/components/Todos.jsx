@@ -5,6 +5,8 @@ import TodoList from "./TodoList"
 export default function Todos() {
     const [text, setText] = useState('')
     const [displayText, setDisplayText] = useState([])
+    const [isEditing, setIsEditing] = useState(false);
+
 
     const handleChange = (event) => {
         setText(event.target.value)
@@ -15,10 +17,22 @@ export default function Todos() {
     }
 
     const handleClick = () => {
-        if (!text.trim()) return
-        text ? setDisplayText([...displayText, { value: text, isChecked: false }]) : null
-        setText('')
-    }
+        if (!text.trim()) return;
+        if (isEditing !== false) {
+            setDisplayText((displayText) => {
+                const newDisplayText = [...displayText];
+                newDisplayText[isEditing] = {
+                    ...newDisplayText[isEditing],
+                    value: text,
+                };
+                return newDisplayText;
+            });
+            setIsEditing(false);
+        } else {
+            setDisplayText([...displayText, { value: text, isChecked: false }]);
+        }
+        setText('');
+    };
 
     const handleCheckboxChange = (index) => {
         setDisplayText((displayText) => {
@@ -52,6 +66,16 @@ export default function Todos() {
         })
     }
 
+    const handleEditClick = (index, value) => {
+        setText(value)
+        setIsEditing(index);
+        setDisplayText((displayText) => {
+            const newDisplayText = [...displayText];
+            newDisplayText[index] = { ...newDisplayText[index], value: value };
+            return newDisplayText;
+        });
+    };
+
     return (
         <main className="flex flex-col items-center mt-10 sm:mt-20 mx-auto container">
             <h1 className="text-[#bebebe] font-bold text-6xl sm:text-8xl">todos</h1>
@@ -63,9 +87,15 @@ export default function Todos() {
                     {
                         displayText.map(({ value, isChecked, isDeleting }, index) => {
                             return (
-                                <TodoList key={index} isChecked={isChecked} handleCheckboxChange={() => handleCheckboxChange(index)}
-                                    value={value} isDeleting={isDeleting} handleDeleteClick={() => handleDeleteClick(index)}
-                                    handleConfirmClick={() => handleConfirmClick(index)} handleCancelClick={() => handleCancelClick(index)}
+                                <TodoList
+                                    key={index}
+                                    isChecked={isChecked}
+                                    handleCheckboxChange={() => handleCheckboxChange(index)}
+                                    value={value} isDeleting={isDeleting}
+                                    handleDeleteClick={() => handleDeleteClick(index)}
+                                    handleConfirmClick={() => handleConfirmClick(index)}
+                                    handleCancelClick={() => handleCancelClick(index)}
+                                    handleEditClick={() => handleEditClick(index, value)}
                                 />
                             )
                         })
